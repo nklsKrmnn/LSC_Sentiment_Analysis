@@ -1,0 +1,32 @@
+{
+    "name": "BERT_SM",
+    "model_type": "BERT",
+    "model_path": "./model_bert_SM.pth",
+    "batchsize_train": 20,
+    "batchsize_val": 50,
+    "epochs": 10,
+    "inflation": 10,
+    "patience": 0,
+    "validation_size": 0.2,
+    "learningrate": 0.0003,
+    "momentum": 0.99,
+    "gpu": true,
+    "seed": 42,
+    "translateV_chance": 0.5,
+    "channels": 1,
+    "net_struct": {
+        "start_channels": 2,
+        "channels": [
+            10,
+            100,
+            1000
+        ],
+        "classes": 3,
+        "make_norm": true
+    },
+    "criterion": "crossentropy",
+    "optimizer": "adam",
+    "onehot": true,
+    "tokenize": true,
+    "max_len": 200
+}
