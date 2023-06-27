@@ -1,0 +1,23 @@
+notebook: Summary
+nb: EDA(MR-Training, Amazon review-test, tweets-test) & nötiges Preprocessing(Feature Engineering) + Resampling
+nb: Klassische Methoden
+	- diverses preprocessing
+	- training(Naive bayes, SVM, LR)
+	- test(MR-test, Amazon, tweets) -> confusion Matrix & Classificaton Report
+	- Vergleich der ACC(über mehrere Modellkombinationen und 3 Datensätze) 
+LATEX: Code & vorgehen beim Training von NN
+nb: BERT
+	- preprocessing (Tokenize)
+	- training
+	- test(MR-test, Amazon, tweets) -> confusion Matrix & Classificaton Report
+	- Vergleich der ACC(3 Datensätze)
+nb: LSTM
+	- preprocessing (Tokenize)
+	- training
+	- test(MR-test, Amazon, tweets) -> confusion Matrix & Classificaton Report
+	- Vergleich der ACC(3 Datensätze)
+nb: BOW + MLP (optional)
+	- preprocessing (Tokenize)
+	- training
+	- test(MR-test, Amazon, tweets) -> confusion Matrix & Classificaton Report
+	- Vergleich der ACC(3 Datensätze)
