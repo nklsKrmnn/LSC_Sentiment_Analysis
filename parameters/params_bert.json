@@ -14,16 +14,6 @@
     "seed": 42,
     "translateV_chance": 0.5,
     "channels": 1,
-    "net_struct": {
-        "start_channels": 2,
-        "channels": [
-            10,
-            100,
-            1000
-        ],
-        "classes": 3,
-        "make_norm": true
-    },
     "criterion": "crossentropy",
     "optimizer": "adam",
     "onehot": true,

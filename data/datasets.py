@@ -24,6 +24,7 @@ class dataset(Dataset):
             self.targets = targets.values.tolist()
 
 
+
     def __len__(self):
         return len(self.input)
 
@@ -31,8 +32,9 @@ class dataset(Dataset):
         input = self.input[index]
         target = self.targets[index]
 
-
         #TODO: weiters preprocessing
+
+        # if self.capitalize:
 
         if self.tokenize:
             # Error Check
@@ -66,6 +68,6 @@ class dataset(Dataset):
         else:
             item = {
                 'input': torch.tensor(self.input.iloc[index].values, dtype=torch.long),
-                'targets': torch.tensor(target, dtype=torch.float)
+                'targets': torch.tensor(target.iloc[index].values, dtype=torch.float)
             }
         return item

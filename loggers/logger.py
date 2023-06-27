@@ -88,34 +88,23 @@ class Logger():
         """
         self._logger.add_text("summary" + "/" + category, str(desc))
 
-    def save_cur_image(self, net, step, data_input, data_output):
+    def save_loss_chart(self, train_loss: list, eval_loss: list, name):
         """
         Logged ein Bild der atkuellen Klassifiezierung 
         """
+        x = len(train_loss)
+
         #TODO: Loss verlauf chart
-        h = 0.02
-        x_min, x_max = data_input[:, 0].min() - 1, data_input[:, 0].max() + 1
-        y_min, y_max = data_input[:, 1].min() - 1, data_input[:, 1].max() + 1
-        xx, yy = np.meshgrid(np.arange(x_min, x_max, h, dtype="float32"),
-                             np.arange(y_min, y_max, h, dtype="float32"))
-        
-        Z = net.forward(torch.tensor(np.c_[xx.ravel(), yy.ravel()]).to(next(net.parameters()).device))
-        Z = np.argmax(Z.detach().cpu().numpy(), axis=1)
-        Z = Z.reshape(xx.shape)
         fig = plt.figure()
-        plt.contourf(xx, yy, Z, alpha=0.8)
-        plt.scatter(
-            data_input[:, 0], data_input[:, 1], c=data_output, s=40)
-        plt.xlim(xx.min(), xx.max())
-        plt.ylim(yy.min(), yy.max())
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        buf.seek(0)
-        # Convert PNG buffer to TF image
-        image = Image.open(buf)
-        image = ToTensor()(image)
-        
-        self._logger.add_image("image/class", image, step)
+        axes = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+        axes.plot(x, train_loss, color='b', label='Train Loss')
+        axes.plot(x, eval_loss, color='r', label='Evaluation Loss')
+        axes.legend()
+        axes.set_xlabel('Epoch')  # Notice the use of set_ to begin methods
+        axes.set_ylabel('Loss')
+        axes.set_title('Loss in Training:' + name)
+        plt.savefig("./runs/loss_charts" + name + ".png")
+        print("[Logger]: Chart saved.")
         plt.close(fig)
         
     def save_net(self, model, filename="best_model"):

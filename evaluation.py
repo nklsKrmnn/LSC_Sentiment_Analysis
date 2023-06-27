@@ -39,7 +39,9 @@ def test(model, path_testset, dataset_params, device, criterion):
     with torch.no_grad():
         for batch in test_loader: #Batch umfasst gesamten Datensatz
             print('[Test]: Prediction...')
+            # TODO: Input statt batch übergeben
             prediction_scores = model(batch, device)
+            # TODO: über if parameter, ob onthot oder nicht?
             prediction_labels = torch.argmax(prediction_scores, dim=1)
             targets_labels = torch.argmax(batch['targets'], dim=1)
 
@@ -59,7 +61,7 @@ def test(model, path_testset, dataset_params, device, criterion):
 
 
 
-def main():
+def main_bert():
     # Laden der Json Parameter
     print("[MAIN]: Loading json file")
     dataholder = load_json("params_bert.json")
@@ -93,4 +95,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main_bert()

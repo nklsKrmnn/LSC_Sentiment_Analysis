@@ -69,6 +69,10 @@ class NetTrainer():
         val_data = pd.read_csv(val_path, delimiter=";")
         train_data = train_data.reset_index(drop=True)
         val_data = val_data.reset_index(drop=True)
+        train_data = train_data.iloc[:20]
+        val_data = val_data.iloc[:20]
+
+        # TODO resampling
 
         # Datasets initialisieren mit Rohdaten
         train_dataset = dataset(train_data["Phrase"], train_data["Sentiment"], **self.dataset_params)
@@ -139,6 +143,8 @@ class NetTrainer():
         self.optimizer = optimizer
         self.inflation = inflation
 
+        train_loss, eval_loss = [], []
+
         # Daten fuer Early stopping
         # TODO: raus oder nutzen
         min_loss = float('inf')
@@ -157,6 +163,7 @@ class NetTrainer():
                 epoch_train_loss = self.calc_epoch(epoch, train_loader)
                 self.logger.train_loss(epoch_train_loss, epoch)
                 self.train_loss.append(epoch_train_loss)
+                train_loss.append(epoch_train_loss)
 
                 #TODO drin lassen? raus?
                 torch.save(self.model.state_dict(), "/content/drive/MyDrive/model.pth")
@@ -166,7 +173,10 @@ class NetTrainer():
                 # Log validateion_loss
                 self.logger.val_loss(epoch_validation_loss, epoch)
                 self.validation_loss.append(epoch_validation_loss)
+                eval_loss.append(epoch_validation_loss)
                 self.logger.save_net(self.model)
+
+                self.logger.save_loss_chart(train_loss, eval_loss, self.name)
 
             except KeyboardInterrupt:
                 # Fuer den Fall wir wollen das Training haendisch abbrechen

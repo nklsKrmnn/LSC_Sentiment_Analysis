@@ -14,7 +14,6 @@ from transformers import BertTokenizer, BertModel, BertConfig
 
 from models.bert import BERTClass
 from nettrainer import NetTrainer
-from data.data_loader import data_loader_BERT
 
 
 # Function to load json file with all the parameters
@@ -43,11 +42,14 @@ def main():
     use_cuda = dataholder["gpu"]
     device = 'cuda' if cuda.is_available() and use_cuda else 'cpu'
 
-    # Tokenizer für BERT laden
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-    # Laden des Netzes
+
+    # Laden modellspezifischer Inhalte
     if dataholder['model_tpye'] == 'BERT':
+        # Tokenizer für BERT laden
+        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+        # Laden des Netzes
         model = BERTClass()
         if dataholder['model_path'] != None:
             model.load_state_dict(torch.load(dataholder['model_path']))
@@ -78,8 +80,8 @@ def main():
     # Trainer erzeugen
     print("[MAIN]: Loading trainer")
     trainer = NetTrainer(model,
-                         batchsize_train= dataholder["batchsize_train"],
-                         batchsize_val= dataholder["batchsize_val"],
+                         batchsize_train=dataholder["batchsize_train"],
+                         batchsize_val=dataholder["batchsize_val"],
                          model_type=dataholder['model_type'],
                          criterion=criterion,
                          seed=dataholder.get("seed"),
