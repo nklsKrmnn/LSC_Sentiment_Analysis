@@ -89,7 +89,7 @@ def main():
                          name=dataholder.get("name"),
                          dataholder_str=json.dumps(dataholder, indent=4),
                          dataset_params=dataset_params,
-                         path_sets="./data/datasets")
+                         path_sets="./data/datasets_mr")
 
 
 

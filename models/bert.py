@@ -8,7 +8,7 @@ class BERTClass(torch.nn.Module):
         super(BERTClass, self).__init__()
         self.l1 = transformers.BertModel.from_pretrained('bert-base-uncased', return_dict=False)
         self.l2 = torch.nn.Dropout(0.3)
-        self.l3 = torch.nn.Linear(768, 5)
+        self.l3 = torch.nn.Linear(768, 3)
 
     def forward(self, input, device):
         ids = input['ids'].to(device, dtype=torch.long)

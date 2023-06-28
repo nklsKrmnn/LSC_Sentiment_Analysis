@@ -68,6 +68,13 @@ class Logger():
         print("[LOG]: Training Step {} logged. Loss {}".format(step, value))
         self._logger.add_scalar("loss/train", value, step)
 
+    def val_acc(self, value, step):
+        """
+        Logged den Loss der Trainings
+        """
+        print("[LOG]: Training Step {} logged. Accuracy {}".format(step, value))
+        self._logger.add_scalar("Accuracy/val", value, step)
+
     def model_log(self, model, input_data=None):
         """
         Logged das Model als Interactiven Graphen

@@ -163,9 +163,10 @@ class NetTrainer():
                 train_loss.append(epoch_train_loss)
 
                 # Validation loss berechnen
-                epoch_validation_loss = self.validation(test_loader)
+                epoch_validation_loss, epoch_val_acc = self.validation(test_loader)
                 # Log validateion_loss
                 self.logger.val_loss(epoch_validation_loss, epoch)
+                self.logger.val_acc(epoch_val_acc, epoch)
                 self.validation_loss.append(epoch_validation_loss)
                 eval_loss.append(epoch_validation_loss)
                 self.logger.save_net(self.model)
@@ -200,7 +201,7 @@ class NetTrainer():
             for _, data in enumerate(test_loader, 0):
                 targets = data['targets'].to(self.device, dtype=torch.float)
                 outputs = self.model(data, self.device)
-                val_loss += self.criterion(outputs, targets)
+                val_loss += self.criterion(outputs, targets).item()
                 val_step += 1
                 fin_targets.extend(targets.cpu().detach().numpy().tolist())
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
@@ -218,7 +219,7 @@ class NetTrainer():
         print(f"F1 Score (Micro) = {f1_score_micro}")
         print(f"F1 Score (Macro) = {f1_score_macro}")
 
-        return val_loss / val_step
+        return (val_loss / val_step, accuracy)
 
     def gpu_setup(self):
         """
