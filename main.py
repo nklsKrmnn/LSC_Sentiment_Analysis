@@ -45,13 +45,13 @@ def main():
 
 
     # Laden modellspezifischer Inhalte
-    if dataholder['model_tpye'] == 'BERT':
+    if dataholder['model_type'] == 'BERT':
         # Tokenizer für BERT laden
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
         # Laden des Netzes
         model = BERTClass()
-        if dataholder['model_path'] != None:
+        if dataholder['model_path'] != "":
             model.load_state_dict(torch.load(dataholder['model_path']))
         model.to(device)
 

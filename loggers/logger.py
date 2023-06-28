@@ -19,7 +19,7 @@ class Logger():
     und gleichzeitig auf der Konsole.
     """
 
-    def __init__(self, name="", locdir="../runs", time_stamp=True):
+    def __init__(self, name="", locdir="./runs", time_stamp=True):
         self._name = name
         if time_stamp:
             self._name = self._name + \
@@ -92,9 +92,9 @@ class Logger():
         """
         Logged ein Bild der atkuellen Klassifiezierung 
         """
-        x = len(train_loss)
+        x = range(len(train_loss))
+        path = os.path.join(self._locdir, 'loss_charts')
 
-        #TODO: Loss verlauf chart
         fig = plt.figure()
         axes = fig.add_axes([0.1, 0.1, 0.8, 0.8])
         axes.plot(x, train_loss, color='b', label='Train Loss')
@@ -103,7 +103,7 @@ class Logger():
         axes.set_xlabel('Epoch')  # Notice the use of set_ to begin methods
         axes.set_ylabel('Loss')
         axes.set_title('Loss in Training:' + name)
-        plt.savefig("./runs/loss_charts" + name + ".png")
+        plt.savefig(os.path.join(path, "loss_chart" + "_" + self._name + ".png"))
         print("[Logger]: Chart saved.")
         plt.close(fig)
         

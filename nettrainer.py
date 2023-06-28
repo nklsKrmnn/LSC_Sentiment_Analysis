@@ -72,8 +72,6 @@ class NetTrainer():
         train_data = train_data.iloc[:20]
         val_data = val_data.iloc[:20]
 
-        # TODO resampling
-
         # Datasets initialisieren mit Rohdaten
         train_dataset = dataset(train_data["Phrase"], train_data["Sentiment"], **self.dataset_params)
         val_dataset = dataset(val_data["Phrase"], val_data["Sentiment"], **self.dataset_params)
@@ -92,7 +90,6 @@ class NetTrainer():
         :param batch_data: Daten eine Trainingsbatch. Ein Item ist ein dict{input, targets}
         :return: Loss der Batch.
         """
-        batch_data.to(self.device)
 
         outputs = self.model(batch_data, self.device)
         self.optimizer.zero_grad()
@@ -127,7 +124,7 @@ class NetTrainer():
             # Zwischenausgabe und Sicherheitsspeicherung
             if _ % 20 == 0:
                 #TODO Speichern funktioniert auf colab noch nicht
-                self.logger.save_net(self.model, self.name)
+                self.logger.save_net(self.model)
                 print(f"Epoch {epoch} Batch {step_count} Loss: {epoch_loss / step_count}")
                 print("Model saved")
 
@@ -164,9 +161,6 @@ class NetTrainer():
                 self.logger.train_loss(epoch_train_loss, epoch)
                 self.train_loss.append(epoch_train_loss)
                 train_loss.append(epoch_train_loss)
-
-                #TODO drin lassen? raus?
-                torch.save(self.model.state_dict(), "/content/drive/MyDrive/model.pth")
 
                 # Validation loss berechnen
                 epoch_validation_loss = self.validation(test_loader)

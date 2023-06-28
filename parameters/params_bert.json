@@ -1,7 +1,7 @@
 {
     "name": "BERT_SM",
     "model_type": "BERT",
-    "model_path": "./model_bert_SM.pth",
+    "model_path": "",
     "batchsize_train": 20,
     "batchsize_val": 50,
     "epochs": 10,
