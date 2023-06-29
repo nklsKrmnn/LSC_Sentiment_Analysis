@@ -21,5 +21,3 @@ nb: BOW + MLP (optional)
 	- training
 	- test(MR-test, Amazon, tweets) -> confusion Matrix & Classificaton Report
 	- Vergleich der ACC(3 Datensätze)
-
-test
