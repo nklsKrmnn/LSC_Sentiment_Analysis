@@ -55,6 +55,8 @@ def main():
             model.load_state_dict(torch.load(dataholder['model_path']))
         model.to(device)
 
+    model.l1.requires_grad_(False)
+
     # Laden der Loss Function
     print("[MAIN]: Loading criterion")
     criterion = None

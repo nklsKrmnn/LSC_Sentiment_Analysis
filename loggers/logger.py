@@ -111,6 +111,15 @@ class Logger():
         axes.set_ylabel('Loss')
         axes.set_title('Loss in Training:' + name)
         plt.savefig(os.path.join(path, "loss_chart" + "_" + self._name + ".png"))
+
+        # Save image in Logger
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        image = Image.open(buf)
+        image = ToTensor()(image)
+        self._logger.add_image("image/class", image)
+
         print("[Logger]: Chart saved.")
         plt.close(fig)
         
