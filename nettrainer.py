@@ -171,7 +171,7 @@ class NetTrainer():
                 eval_loss.append(epoch_validation_loss)
                 self.logger.save_net(self.model)
 
-                self.logger.save_loss_chart(train_loss, eval_loss, self.name)
+                self.logger.save_loss_chart(train_loss, eval_loss, self.name, epoch)
 
             except KeyboardInterrupt:
                 # Fuer den Fall wir wollen das Training haendisch abbrechen

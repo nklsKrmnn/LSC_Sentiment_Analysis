@@ -95,7 +95,7 @@ class Logger():
         """
         self._logger.add_text("summary" + "/" + category, str(desc))
 
-    def save_loss_chart(self, train_loss: list, eval_loss: list, name):
+    def save_loss_chart(self, train_loss: list, eval_loss: list, name, step: int):
         """
         Logged ein Bild der atkuellen Klassifiezierung 
         """
@@ -118,7 +118,7 @@ class Logger():
         buf.seek(0)
         image = Image.open(buf)
         image = ToTensor()(image)
-        self._logger.add_image("image/class", image)
+        self._logger.add_image("image/class", image, step)
 
         print("[Logger]: Chart saved.")
         plt.close(fig)
