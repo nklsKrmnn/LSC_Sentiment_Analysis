@@ -15,12 +15,9 @@ from transformers import BertTokenizer, BertModel, BertConfig
 from models.bert import BERTClass
 from nettrainer import NetTrainer
 
+import warnings
+warnings.filterwarnings("ignore")
 
-# Function to load json file with all the parameters
-# - Model:
-# - Dataloader:
-# - Trainer:
-# - Optimizer:
 def load_json(param_file="test_params.json", params_dir="parameters"):
     """
     Laedt eine Json Datei die als erster Parameter uebergeben wurde.

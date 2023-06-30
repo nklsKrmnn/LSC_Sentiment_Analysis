@@ -1,7 +1,7 @@
 {
     "name": "BERT_SM",
     "model_type": "BERT",
-    "model_path": "",
+    "model_path": "./runs/model_saves/best_model_BERT_SM - 2023-06-28 22-08-32.387422_.pt",
     "batchsize_train": 20,
     "batchsize_val": 50,
     "batchsize_test": 100,

@@ -10,8 +10,11 @@ from sklearn import metrics
 
 from data.datasets import dataset as dataset
 
+import warnings
+warnings.filterwarnings("ignore")
 
-class NetTrainer():
+
+class NetTrainer:
     """
         Diese Klasse fuehrt das Training durch.
         """

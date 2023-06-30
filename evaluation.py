@@ -15,8 +15,11 @@ from models.bert import BERTClass
 from data.datasets import dataset
 from main import load_json
 
+import warnings
+warnings.filterwarnings("ignore")
 
-def test(model, path_testset, dataset_params, device, criterion):
+
+def test_bert(dataholder, path_testset):
     """
     Diese Funktion testet ein Netz nach dem Training mit dem Testdatensatz
     :param model: Modell, dass zu testen ist
@@ -26,55 +29,15 @@ def test(model, path_testset, dataset_params, device, criterion):
     :param criterion: Loss function
     :return: -
     """
-
-    # Rohdaten als dataframe laden
-    test_data = pd.read_csv(path_testset, delimiter=";")
-    test_data = test_data.iloc[:100].reset_index(drop=True)
-
-    # Initialisierung Dataset und Dataloader
-    test_dataset = dataset(test_data["Phrase"], test_data["Sentiment"], **dataset_params)
-    test_loader = DataLoader(test_dataset, batch_size=len(test_dataset), shuffle=True,
-                             num_workers=0)
-    # Gradienten nicht berechnen bei Validation
-    with torch.no_grad():
-        for batch in test_loader: #Batch umfasst gesamten Datensatz
-            print('[Test]: Prediction...')
-            prediction_scores = model(batch.input, device)
-            # TODO: über if parameter, ob onthot oder nicht?
-            prediction_labels = torch.argmax(prediction_scores, dim=1)
-            targets_labels = torch.argmax(batch['targets'], dim=1)
-
-            # Calculate Loss
-            total_loss = criterion(prediction_scores, batch['targets'])
-            avg_loss = total_loss / len(test_dataset)
-            print(avg_loss)
-
-            # confusion matrix
-            cm = confusion_matrix(targets_labels, prediction_labels)
-            cm_display = ConfusionMatrixDisplay(cm).plot()
-            plt.show()
-
-            # Classification Report
-            print(classification_report(targets_labels, prediction_labels))
-
-
-
-
-def main_bert():
-    # Laden der Json Parameter
-    print("[MAIN]: Loading json file")
-    dataholder = load_json("params_bert.json")
-
-    path_test = "./data/datasets/Testset.csv"
-
     use_cuda = dataholder['gpu']
     device = 'cuda' if cuda.is_available() and use_cuda else 'cpu'
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
     model = BERTClass()
-    model.load_state_dict(torch.load(dataholder['model_path']))
+    model.load_state_dict(torch.load(dataholder['model_path'], map_location=device))
     model.to(device)
 
+    # Set training parameters
     dataset_params = {
         'onehot': dataholder["onehot"],
         'tokenize_bert': dataholder["tokenize"],
@@ -90,8 +53,72 @@ def main_bert():
     elif dataholder["criterion"] == "crossentropy":
         criterion = nn.CrossEntropyLoss()
 
-    test(model, path_test, dataset_params, device, criterion)
+    # Rohdaten als dataframe laden
+    test_data = pd.read_csv(path_testset, delimiter=";")
+    test_data = test_data.iloc[:10].reset_index(drop=True)
 
+    # Initialisierung Dataset und Dataloader
+    test_dataset = dataset(test_data["Phrase"], test_data["Sentiment"], **dataset_params)
+    test_loader = DataLoader(test_dataset, batch_size=len(test_dataset), shuffle=True,
+                             num_workers=0)
+
+    model.eval()
+
+    fin_targets = []
+    fin_outputs = []
+    total_loss = 0
+    test_step = 0
+
+    # Gradienten nicht berechnen bei Validation
+    with torch.no_grad():
+        for _, data in enumerate(test_loader, 0):
+            targets = data['targets'].to(device, dtype=torch.float)
+            outputs = model(data, device)
+            total_loss += criterion(outputs, targets).item()
+            test_step += 1
+            fin_targets.extend(targets.cpu().detach().numpy().tolist())
+            fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
+    outputs, targets = fin_outputs, fin_targets
+
+    # Labels extrahieren
+    if (dataset_params['onehot']):
+        outputs = np.array(outputs).argmax(axis=1)
+        targets = np.array(targets).argmax(axis=1)
+
+    # Calculate Loss
+    avg_loss = total_loss / test_step
+
+    return outputs, targets, avg_loss
+
+def test_statistics(outputs, targets, target_labels, test_loss=None):
+
+    if test_loss != None:
+        print(f'Test-Loss: {test_loss}')
+
+    # confusion matrix
+    cm = confusion_matrix(targets, outputs, labels=range(len(target_labels)))
+    cm_display = ConfusionMatrixDisplay(cm, display_labels=target_labels).plot()
+    plt.title("Confusion Matrix")
+    plt.show()
+
+    # Classification Report
+    print("Classifcation Report:")
+    print(classification_report(targets, outputs, target_names=target_labels))
+
+
+
+
+def main_bert():
+    # Laden der Json Parameter
+    print("[MAIN]: Loading json file")
+    dataholder = load_json("params_bert_test.json")
+
+    path_test = "./data/datasets_mr/Testset.csv"
+
+    target_labels = ["negative", "neutral", "positive"]
+
+    outputs, targets, test_loss = test_bert(dataholder, path_test)
+    test_statistics(outputs, targets, target_labels, test_loss)
 
 if __name__ == '__main__':
     main_bert()
