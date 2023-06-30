@@ -10,18 +10,15 @@ from sklearn import metrics
 
 from data.datasets import dataset as dataset
 
-import warnings
-warnings.filterwarnings("ignore")
 
-
-class NetTrainer:
+class NetTrainer():
     """
         Diese Klasse fuehrt das Training durch.
         """
 
     def __init__(self, model, model_type: str, batchsize_train, batchsize_val, path_sets, dataset_params, criterion,
                  seed=69, device='cpu',
-                 name="", dataholder_str="", start_set: int = 1):
+                 name="", dataholder_str=""):
         # Parameter initialisierung
         self.model = model
         self.model_type = model_type
@@ -31,7 +28,6 @@ class NetTrainer:
         self.seed = seed
         self.device = device
         self.name = name
-        self.current_set = start_set
         self.path_sets = path_sets
         self.dataset_params = dataset_params
 
@@ -56,14 +52,17 @@ class NetTrainer:
         if self.device == 'cuda':
             self.gpu_setup()
 
-    def prepare_data(self,):
+    def prepare_data(self):
         """
         Lädt das Trainset und das Validationset für das Training. Welche Datensätze es lädt hängt von
         der Initialisierung des Parameters 'path_sets' ab.
         :return: train_loader, val_loader
         """
         # Paths ermitteln
-        train_file = "Trainset_" + str(self.current_set + 1) + ".csv"
+        if (self.current_set == -1):
+            train_file = "Trainset_complete.csv"
+        else:
+            train_file = "Trainset_" + str(self.current_set + 1) + ".csv"
         train_path = os.path.join(self.path_sets, train_file)
         val_path = os.path.join(self.path_sets, "Validationset.csv")
 
@@ -72,8 +71,8 @@ class NetTrainer:
         val_data = pd.read_csv(val_path, delimiter=";")
         train_data = train_data.reset_index(drop=True)
         val_data = val_data.reset_index(drop=True)
-        train_data = train_data.iloc[:20]
-        val_data = val_data.iloc[:20]
+        train_data = train_data
+        val_data = val_data
 
         # Datasets initialisieren mit Rohdaten
         train_dataset = dataset(train_data["Phrase"], train_data["Sentiment"], **self.dataset_params)
@@ -126,20 +125,21 @@ class NetTrainer:
 
             # Zwischenausgabe und Sicherheitsspeicherung
             if _ % 20 == 0:
-                #TODO Speichern funktioniert auf colab noch nicht
                 self.logger.save_net(self.model)
                 print(f"Epoch {epoch} Batch {step_count} Loss: {epoch_loss / step_count}")
                 print("Model saved")
 
         return epoch_loss / step_count
 
-    def train(self, epochs, optimizer, patience=0, inflation=1):
+    def train(self, epochs, optimizer, n_trainsets, start_set: int = 1, patience=0, inflation=1):
         """
         Methode fuer das ganze Training
         """
         # Log den Start des Trainings
         self.logger.train_start()
 
+
+        self.current_set = start_set
         self.optimizer = optimizer
         self.inflation = inflation
 
@@ -151,13 +151,18 @@ class NetTrainer:
         cur_patience = 0
         finish_reason = 'Training did not start'
 
+        # Bei -1 gesamtes Trainingsdatenset laden
+        if (self.current_set == -1):
+            train_loader, test_loader = self.prepare_data()
+
         # Iterieren über alle Epochen
         for epoch in range(epochs):
             try:
-                # Pro Epoche Daten neu laden
-                train_loader, test_loader = self.prepare_data()
-                # pro Epoche das nächste Dataset selektieren
-                self.current_set = (self.current_set + 1) % 6
+                if (self.current_set > 0):
+                    # Pro Epoche Daten neu laden
+                    train_loader, test_loader = self.prepare_data()
+                    # pro Epoche das nächste Dataset selektieren
+                    self.current_set = (self.current_set + 1) % n_trainsets
 
                 # Berechnung Loss und Optimization
                 epoch_train_loss = self.calc_epoch(epoch, train_loader)
