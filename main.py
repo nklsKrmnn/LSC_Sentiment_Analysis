@@ -12,7 +12,7 @@ import transformers
 from transformers import BertTokenizer, BertModel, BertConfig
 # My intern packages for dataloader, model etc
 
-from models.bert import BERTClass
+from models.bert import BERTClass, BERTClass_2FC
 from nettrainer import NetTrainer
 
 
@@ -36,7 +36,7 @@ def load_json(param_file="test_params.json", params_dir="parameters"):
 def main():
     # Laden der Json Parameter
     print("[MAIN]: Loading json file")
-    dataholder = load_json("params_bert.json")
+    dataholder = load_json("params_bert_2FC.json")
 
     # Device ermitteln (GPU oder CPU)
     use_cuda = dataholder["gpu"]
@@ -50,7 +50,7 @@ def main():
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
         # Laden des Netzes
-        model = BERTClass()
+        model = BERTClass_2FC()
         if dataholder['model_path'] != "":
             model.load_state_dict(torch.load(dataholder['model_path']))
         model.to(device)
