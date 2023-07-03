@@ -5,7 +5,7 @@ import torch.nn as nn
 
 class BERTClass_2FC(torch.nn.Module):
     def __init__(self):
-        super(BERTClass, self).__init__()
+        super(BERTClass_2FC, self).__init__()
         self.l1 = transformers.BertModel.from_pretrained('bert-base-uncased', return_dict=False)
         self.l2 = torch.nn.Dropout(0.2)
         self.l3 = torch.nn.Linear(768, 200)
