@@ -120,9 +120,12 @@ class Logger():
         image = ToTensor()(image)
         self._logger.add_image("image/class", image, step)
 
-        print("[Logger]: Chart saved.")
+        axes.set_ylim(bottom=0, top=2)
+        plt.savefig(os.path.join(path, "loss_chart_fixed" + "_" + self._name + ".png"))
+
+        print("[Logger]: Charts saved.")
         plt.close(fig)
-        
+
     def save_net(self, model, filename="best_model"):
         """
         Speichert das Trainierte Netz
@@ -134,7 +137,7 @@ class Logger():
             state_dict = model.state_dict()
         except AttributeError:
             state_dict = model.module.state_dict()
-        torch.save(state_dict, os.path.join(path, filename + "_" + self._name + "_"+'.pt'))
+        torch.save(state_dict, os.path.join(path, filename + "_" + self._name + "_" + '.pt'))
 
     def close(self):
         """
