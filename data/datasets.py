@@ -8,7 +8,7 @@ from torch.utils.data import Dataset
 class dataset(Dataset):
 
     def __init__(self, input, targets,
-                 tokenize_bert: bool, onehot: bool = True,
+                 tokenize_bert: bool, onehot: bool = True, second_layer: bool = False,
                  tokenizer=None, max_len=None):
         self.input = input
         self.targets = targets
@@ -16,9 +16,11 @@ class dataset(Dataset):
         self.max_len = max_len
         self.onehot = onehot
         self.tokenize = tokenize_bert
+        self.second_layer = second_layer
 
         if self.onehot:
             # One hot encoding
+            print("onehot encoding")
             targets = pd.DataFrame(self.targets, columns=['Sentiment'])
             targets = pd.get_dummies(targets['Sentiment'], dtype=float)#.drop('Sentiment', axis=1)
             self.targets = targets.values.tolist()
@@ -65,9 +67,14 @@ class dataset(Dataset):
                 'token_type_ids': torch.tensor(token_type_ids, dtype=torch.long),
                 'targets': torch.tensor(target, dtype=torch.float)
             }
+        elif self.second_layer:
+            item = {
+                'input': torch.tensor(self.input[index], dtype=torch.float32),
+                'targets': torch.tensor(self.targets[index], dtype=torch.float)
+            }
         else:
             item = {
-                'input': torch.tensor(self.input.iloc[index].values, dtype=torch.long),
-                'targets': torch.tensor(target.iloc[index].values, dtype=torch.float)
+                'input': torch.tensor(self.input[index], dtype=torch.long),
+                'targets': torch.tensor(self.targets[index], dtype=torch.float)
             }
         return item

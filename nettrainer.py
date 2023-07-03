@@ -13,6 +13,8 @@ from data.datasets import dataset as dataset
 import warnings
 warnings.filterwarnings("ignore")
 
+CSV_FILES = False
+
 class NetTrainer():
     """
         Diese Klasse fuehrt das Training durch.
@@ -60,25 +62,35 @@ class NetTrainer():
         der Initialisierung des Parameters 'path_sets' ab.
         :return: train_loader, val_loader
         """
-        # Paths ermitteln
-        if (self.current_set == -1):
-            train_file = "Trainset_complete.csv"
+
+        if CSV_FILES:
+            # Paths ermitteln
+            if (self.current_set == -1):
+                train_file = "Trainset_complete.csv"
+            else:
+                train_file = "Trainset_" + str(self.current_set + 1) + ".csv"
+            train_path = os.path.join(self.path_sets, train_file)
+            val_path = os.path.join(self.path_sets, "Validationset.csv")
+
+            # Rohdaten als dataframe laden
+            train_data = pd.read_csv(train_path, delimiter=";")
+            val_data = pd.read_csv(val_path, delimiter=";")
+            train_data = train_data.reset_index(drop=True)
+            val_data = val_data.reset_index(drop=True)
+
+            # Datasets initialisieren mit Rohdaten
+            train_dataset = dataset(train_data["Phrase"], train_data["Sentiment"], **self.dataset_params)
+            val_dataset = dataset(val_data["Phrase"], val_data["Sentiment"], **self.dataset_params)
+
         else:
-            train_file = "Trainset_" + str(self.current_set + 1) + ".csv"
-        train_path = os.path.join(self.path_sets, train_file)
-        val_path = os.path.join(self.path_sets, "Validationset.csv")
-
-        # Rohdaten als dataframe laden
-        train_data = pd.read_csv(train_path, delimiter=";")
-        val_data = pd.read_csv(val_path, delimiter=";")
-        train_data = train_data.reset_index(drop=True)
-        val_data = val_data.reset_index(drop=True)
-        train_data = train_data.iloc[:20]
-        val_data = val_data.iloc[:20]
-
-        # Datasets initialisieren mit Rohdaten
-        train_dataset = dataset(train_data["Phrase"], train_data["Sentiment"], **self.dataset_params)
-        val_dataset = dataset(val_data["Phrase"], val_data["Sentiment"], **self.dataset_params)
+            if (self.current_set == -1):
+                train_file = "Trainset_complete.pt"
+            else:
+                train_file = "Trainset_" + str(self.current_set + 1) + ".pt"
+            train_path = os.path.join(self.path_sets, train_file)
+            val_path = os.path.join(self.path_sets, "Validationset.pt")
+            train_dataset = torch.load(train_path)
+            val_dataset = torch.load(val_path)
 
         # Dataloader initialisieren mit Datasets
         train_loader = DataLoader(train_dataset, batch_size=self.batch_size_train, shuffle=True,
