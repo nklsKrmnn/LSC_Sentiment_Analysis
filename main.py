@@ -15,6 +15,8 @@ from transformers import BertTokenizer, BertModel, BertConfig
 from models.bert import BERTClass, BERTClass_2FC
 from nettrainer import NetTrainer
 
+import warnings
+warnings.filterwarnings("ignore")
 
 # Function to load json file with all the parameters
 # - Model:

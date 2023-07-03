@@ -102,14 +102,18 @@ class Logger():
         x = range(len(train_loss))
         path = os.path.join(self._locdir, 'loss_charts')
 
-        fig = plt.figure()
-        axes = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-        axes.plot(x, train_loss, color='b', label='Train Loss')
-        axes.plot(x, eval_loss, color='r', label='Evaluation Loss')
-        axes.legend()
-        axes.set_xlabel('Epoch')  # Notice the use of set_ to begin methods
-        axes.set_ylabel('Loss')
-        axes.set_title('Loss in Training:' + name)
+        fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(15, 7))
+        axes[1].set_ylim(bottom=0, top=2)
+        for ax in axes:
+            ax.plot(x, train_loss, color='b', label='Train Loss')
+            ax.plot(x, eval_loss, color='r', label='Evaluation Loss')
+            ax.legend()
+            ax.set_ylabel('Loss')
+            ax.set_xlabel('Epoch')  # Notice the use of set_ to begin methods
+
+        axes[0].set_title('Loss in Training: ' + name)
+        axes[1].set_title('Loss in Training (fixed scale): ' + name)
+        plt.tight_layout()
         plt.savefig(os.path.join(path, "loss_chart" + "_" + self._name + ".png"))
 
         # Save image in Logger
@@ -119,9 +123,6 @@ class Logger():
         image = Image.open(buf)
         image = ToTensor()(image)
         self._logger.add_image("image/class", image, step)
-
-        axes.set_ylim(bottom=0, top=2)
-        plt.savefig(os.path.join(path, "loss_chart_fixed" + "_" + self._name + ".png"))
 
         print("[Logger]: Charts saved.")
         plt.close(fig)

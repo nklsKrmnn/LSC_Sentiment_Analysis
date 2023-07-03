@@ -10,6 +10,8 @@ from sklearn import metrics
 
 from data.datasets import dataset as dataset
 
+import warnings
+warnings.filterwarnings("ignore")
 
 class NetTrainer():
     """
@@ -71,8 +73,8 @@ class NetTrainer():
         val_data = pd.read_csv(val_path, delimiter=";")
         train_data = train_data.reset_index(drop=True)
         val_data = val_data.reset_index(drop=True)
-        train_data = train_data
-        val_data = val_data
+        train_data = train_data.iloc[:20]
+        val_data = val_data.iloc[:20]
 
         # Datasets initialisieren mit Rohdaten
         train_dataset = dataset(train_data["Phrase"], train_data["Sentiment"], **self.dataset_params)
