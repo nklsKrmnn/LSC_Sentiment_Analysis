@@ -202,7 +202,8 @@ class NetTrainer():
 
                 self.logger.save_loss_chart(train_loss, eval_loss, self.name, epoch)
 
-                gc.collect()
+                if epoch % 20 == 0:
+                    gc.collect()
 
             except KeyboardInterrupt:
                 # Fuer den Fall wir wollen das Training haendisch abbrechen
