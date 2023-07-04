@@ -1,6 +1,7 @@
 def main():
     # Laden der Json Parameter
-    print("Test")
+    while True:
+        print("Test")
 
 
 if __name__ == '__main__':
