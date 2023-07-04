@@ -113,7 +113,7 @@ def main_bert():
     print("[MAIN]: Loading json file")
     dataholder = load_json("params_bert_test.json")
 
-    path_test = "./data/datasets_mr/Testset.csv"
+    path_test = "data/dataset_mr/Testset.csv"
 
     target_labels = ["negative", "neutral", "positive"]
 

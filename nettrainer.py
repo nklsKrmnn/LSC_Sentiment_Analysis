@@ -16,15 +16,17 @@ from IPython.display import clear_output
 import warnings
 warnings.filterwarnings("ignore")
 
-CSV_FILES = False
-RETRAIN = True
+CSV_FILES = True
+RETRAIN = False
+COLLECT = False
+CONTROL_OUTPUT = False
 
 class NetTrainer():
     """
         Diese Klasse fuehrt das Training durch.
         """
 
-    def __init__(self, model, model_type: str, batchsize_train, batchsize_val, path_sets, dataset_params, criterion,
+    def __init__(self, model, new_model:bool,  model_type: str, batchsize_train, batchsize_val, path_sets, dataset_params, criterion,
                  seed=69, device='cpu',
                  name="", dataholder_str=""):
         # Parameter initialisierung
@@ -39,17 +41,13 @@ class NetTrainer():
         self.path_sets = path_sets
         self.dataset_params = dataset_params
 
-        # Listen zur Sammlung von Train und Validation loss pro Epoch
-        self.train_loss = []
-        self.validation_loss = []
-
         # RNG Seed setzen
         torch.manual_seed(self.seed)
         if self.device == 'cuda':
             torch.cuda.manual_seed(self.seed)
 
         # Erzeugen des Loggers
-        self.logger = Logger(name, time_stamp=RETRAIN)
+        self.logger = Logger(name, new_model=new_model, time_stamp=False)
 
         # Erste Informationen loggen
         self.logger.summary("dataholder", dataholder_str)
@@ -104,6 +102,20 @@ class NetTrainer():
 
         return train_loader, val_loader
 
+    def load_date(self, path_file):
+        if path_file.split['.'][1] == "csv":
+            with open(path_file, encoding='latin_1', errors='ignore') as csv_file:
+                data = pd.read_csv(csv_file, delimiter=";")
+            data = data.reset_index(drop=True)
+            new_dataset = dataset(data["Phrase"], data["Sentiment"], **self.dataset_params)
+        elif path_file.split['.'][1] == "pt":
+            new_dataset = torch.load(path_file)
+
+        loader = DataLoader(new_dataset, batch_size=self.batch_size_val, shuffle=True,
+                                num_workers=0)
+
+        return loader
+
     def calc_batch(self, batch_data):
         """
         Diese Funktion berechnet den Loss für eine Batch
@@ -142,7 +154,7 @@ class NetTrainer():
             step_count += 1
 
             # Zwischenausgabe und Sicherheitsspeicherung
-            if _ % 20 == 0:
+            if _ % 20 == 0 and CONTROL_OUTPUT:
                 self.logger.save_net(self.model)
                 print(f"Epoch {epoch} Batch {step_count} Loss: {epoch_loss / step_count}")
                 print("Model saved")
@@ -188,7 +200,6 @@ class NetTrainer():
                 clear_output(wait=True)
 
                 self.logger.train_loss(epoch_train_loss, epoch)
-                self.train_loss.append(epoch_train_loss)
                 train_loss.append(epoch_train_loss)
 
                 # Validation loss berechnen
@@ -196,13 +207,12 @@ class NetTrainer():
                 # Log validateion_loss
                 self.logger.val_loss(epoch_validation_loss, epoch)
                 self.logger.val_acc(epoch_val_acc, epoch)
-                self.validation_loss.append(epoch_validation_loss)
                 eval_loss.append(epoch_validation_loss)
                 self.logger.save_net(self.model)
 
                 self.logger.save_loss_chart(train_loss, eval_loss, self.name, epoch)
 
-                if epoch % 20 == 0:
+                if epoch % 20 == 0 and COLLECT:
                     gc.collect()
 
             except KeyboardInterrupt:
@@ -238,6 +248,8 @@ class NetTrainer():
                 fin_targets.extend(targets.cpu().detach().numpy().tolist())
                 fin_outputs.extend(torch.sigmoid(outputs).cpu().detach().numpy().tolist())
         outputs, targets = fin_outputs, fin_targets
+
+        fin_outputs, fin_targets = [], []
 
         # Labels extrahieren
         outputs = np.array(outputs).argmax(axis=1)

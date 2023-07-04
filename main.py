@@ -53,7 +53,7 @@ def main():
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
         # Laden des Netzes
-        model = Class_2FC()
+        model = BERTClass_2FC()
         if dataholder['model_path'] != "":
             model.load_state_dict(torch.load(dataholder['model_path']))
     else:
@@ -63,8 +63,6 @@ def main():
         if dataholder['model_path'] != "":
             model.load_state_dict(torch.load(dataholder['model_path']))
     model.to(device)
-
-    #model.l1.requires_grad_(False)
 
     # Laden der Loss Function
     print("[MAIN]: Loading criterion")
@@ -91,6 +89,7 @@ def main():
     # Trainer erzeugen
     print("[MAIN]: Loading trainer")
     trainer = NetTrainer(model,
+                         new_model=(dataholder['model_path'] != ""),
                          batchsize_train=dataholder["batchsize_train"],
                          batchsize_val=dataholder["batchsize_val"],
                          model_type=dataholder['model_type'],
@@ -100,7 +99,7 @@ def main():
                          name=dataholder.get("name"),
                          dataholder_str=json.dumps(dataholder, indent=4),
                          dataset_params=dataset_params,
-                         path_sets="./data/dataset_mr_after_first_layer")
+                         path_sets="./data/dataset_mr")
 
 
 

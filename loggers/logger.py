@@ -19,12 +19,13 @@ class Logger():
     und gleichzeitig auf der Konsole.
     """
 
-    def __init__(self, name="", locdir="./runs", time_stamp=True):
+    def __init__(self, name="", locdir="./runs", time_stamp=True, new_model:bool = True):
         self._name = name
         if time_stamp:
             self._name = self._name + \
                 (" - " if name != "" else "") + str(datetime.now()).replace(":","-")
 
+        self._model_name = self._name if new_model else name
         self._locdir = locdir
         self._logger = SummaryWriter(locdir + "/" + self._name)
 
@@ -117,12 +118,13 @@ class Logger():
         plt.savefig(os.path.join(path, "loss_chart" + "_" + self._name + ".png"))
 
         # Save image in Logger
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        buf.seek(0)
-        image = Image.open(buf)
-        image = ToTensor()(image)
-        self._logger.add_image("image/class", image, step)
+        if (step % 250 == 0):
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+            image = Image.open(buf)
+            image = ToTensor()(image)
+            self._logger.add_image("image/class", image, step)
 
         print("[Logger]: Charts saved.")
         plt.close(fig)
@@ -138,7 +140,7 @@ class Logger():
             state_dict = model.state_dict()
         except AttributeError:
             state_dict = model.module.state_dict()
-        torch.save(state_dict, os.path.join(path, filename + "_" + self._name + "_" + '.pt'))
+        torch.save(state_dict, os.path.join(path, filename + "_" + self._model_name + "_" + '.pt'))
 
     def close(self):
         """
