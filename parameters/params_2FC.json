@@ -1,11 +1,11 @@
 {
     "name": "2FC_ppbert_SM",
     "model_type": "MLP",
-    "model_path": "",
+    "model_path": "./runs/model_saves/best_model_2FC_ppbert_SM.pt",
     "batchsize_train": 100,
     "batchsize_val": 300,
     "batchsize_test": 200,
-    "epochs": 1000,
+    "epochs": 10000,
     "n_trainsets": 6,
     "start_trainset": 1,
     "inflation": 10,

@@ -27,7 +27,9 @@ class Class_2FC(torch.nn.Module):
 
     def forward(self, input, device):
 
-        output_1 = self.l2(input['input'])
+        input = input['input'].to(device, torch.float32)
+
+        output_1 = self.l2(input)
         output_2 = self.l3(output_1)
         output_3 = self.l4(output_2)
         output = self.l5(output_3)

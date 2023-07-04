@@ -56,10 +56,13 @@ def main():
         model = Class_2FC()
         if dataholder['model_path'] != "":
             model.load_state_dict(torch.load(dataholder['model_path']))
-        model.to(device)
     else:
-        model = Class_2FC()
         tokenizer = None
+
+        model = Class_2FC()
+        if dataholder['model_path'] != "":
+            model.load_state_dict(torch.load(dataholder['model_path']))
+    model.to(device)
 
     #model.l1.requires_grad_(False)
 

@@ -1,3 +1,5 @@
+import gc
+
 import numpy as np
 import torch
 import torch.utils.data as torchData
@@ -10,10 +12,12 @@ from sklearn import metrics
 
 from data.datasets import dataset as dataset
 
+from IPython.display import clear_output
 import warnings
 warnings.filterwarnings("ignore")
 
 CSV_FILES = False
+RETRAIN = True
 
 class NetTrainer():
     """
@@ -45,7 +49,7 @@ class NetTrainer():
             torch.cuda.manual_seed(self.seed)
 
         # Erzeugen des Loggers
-        self.logger = Logger(name)
+        self.logger = Logger(name, time_stamp=RETRAIN)
 
         # Erste Informationen loggen
         self.logger.summary("dataholder", dataholder_str)
@@ -180,6 +184,9 @@ class NetTrainer():
 
                 # Berechnung Loss und Optimization
                 epoch_train_loss = self.calc_epoch(epoch, train_loader)
+
+                clear_output(wait=True)
+
                 self.logger.train_loss(epoch_train_loss, epoch)
                 self.train_loss.append(epoch_train_loss)
                 train_loss.append(epoch_train_loss)
@@ -194,6 +201,8 @@ class NetTrainer():
                 self.logger.save_net(self.model)
 
                 self.logger.save_loss_chart(train_loss, eval_loss, self.name, epoch)
+
+                gc.collect()
 
             except KeyboardInterrupt:
                 # Fuer den Fall wir wollen das Training haendisch abbrechen
