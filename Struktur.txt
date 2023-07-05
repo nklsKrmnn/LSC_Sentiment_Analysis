@@ -21,3 +21,39 @@ nb: BOW + MLP (optional)
 	- training
 	- test(MR-test, Amazon, tweets) -> confusion Matrix & Classificaton Report
 	- Vergleich der ACC(3 Datensätze)
+
+
+### Quadriga Befehle ###
+ssh stud195809@quadriga.fh-wedel.de
+
+nano Definition_File
+cat Definition_File
+
+# Dateien rüber kopieren in Quad-Ordner
+scp -r <Source> stud195809@quadriga.fh-wedel.de:/home/stud105809
+
+# Öffnen einer virtuellen Konsole
+tmux
+
+# Singularity image von Definition_File erzeugen:
+singularity biuld --fakeroot <Ziel> <Source>
+ -> singularity biuld --fakeroot lsc_image.sif Definition_File
+
+# Container mit CPU öffnen
+SINGULARITYENV_CUDA_VISIBLE_DEVICES=<cpu_id> singularity shell <Image>
+ -> SINGULARITYENV_CUDA_VISIBLE_DEVICES=0 singularity shell lsc_image.sif
+
+# In tmux_Konsole (detach virtuelle Konsole):
+STRG + b und dann d für detach
+
+tmux ls
+tmux attach -t <tmux_session_id>
+
+# In tmux-Konsole (beendet Virtuelle Konsole):
+STRG + d
+
+# GPUs checken
+nvidia-smi
+
+# Singularity container schließen
+exit
