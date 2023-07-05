@@ -140,7 +140,9 @@ class Logger():
             state_dict = model.state_dict()
         except AttributeError:
             state_dict = model.module.state_dict()
-        torch.save(state_dict, os.path.join(path, filename + "_" + self._model_name + "_" + '.pt'))
+
+        torch.save(model, os.path.join(path, filename + "_" + self._model_name + '.pt'))
+        #torch.save(state_dict, os.path.join(path, filename + "_" + self._model_name + '.pt'))
 
     def close(self):
         """

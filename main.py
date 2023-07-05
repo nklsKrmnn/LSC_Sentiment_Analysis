@@ -1,5 +1,6 @@
 # Imports
 import json
+import os
 import sys
 
 # Torch specific packages
@@ -39,29 +40,35 @@ def load_json(param_file="test_params.json", params_dir="parameters"):
 def main():
     # Laden der Json Parameter
     print("[MAIN]: Loading json file")
-    dataholder = load_json("params_2FC.json")
+    dataholder = load_json("params_bert.json")
 
     # Device ermitteln (GPU oder CPU)
     use_cuda = dataholder["gpu"]
     device = 'cuda' if cuda.is_available() and use_cuda else 'cpu'
 
-
-
     # Laden modellspezifischer Inhalte
+    if dataholder['model_path'] != "":
+        file_path = os.path.join("runs", "model_saves", dataholder['model_path'])
+        model = torch.load(file_path)
+        #model = BERTClass_2FC()
+        #model.load_state_dict(torch.load(file_path))
+        print("[MAIN]: Model loaded")
+    else:
+        if dataholder['model_type'] == 'BERT':
+
+            # Laden des Netzes
+            model = BERTClass_2FC()
+            #model.l1.requires_grad = False
+
+        elif (dataholder['model_type'] == 'MLP'):
+            tokenizer = None
+            model = Class_2FC()
+        print("[MAIN]: Model created")
+
     if dataholder['model_type'] == 'BERT':
         # Tokenizer für BERT laden
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-        # Laden des Netzes
-        model = BERTClass_2FC()
-        if dataholder['model_path'] != "":
-            model.load_state_dict(torch.load(dataholder['model_path']))
-    else:
-        tokenizer = None
-
-        model = Class_2FC()
-        if dataholder['model_path'] != "":
-            model.load_state_dict(torch.load(dataholder['model_path']))
     model.to(device)
 
     # Laden der Loss Function
@@ -99,7 +106,7 @@ def main():
                          name=dataholder.get("name"),
                          dataholder_str=json.dumps(dataholder, indent=4),
                          dataset_params=dataset_params,
-                         path_sets="./data/dataset_mr")
+                         path_sets=os.path.join("data", dataholder["data_dir"]))
 
 
 

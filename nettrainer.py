@@ -20,6 +20,7 @@ CSV_FILES = True
 RETRAIN = False
 COLLECT = False
 CONTROL_OUTPUT = False
+CPUTEST = True
 
 class NetTrainer():
     """
@@ -79,6 +80,10 @@ class NetTrainer():
             val_data = pd.read_csv(val_path, delimiter=";")
             train_data = train_data.reset_index(drop=True)
             val_data = val_data.reset_index(drop=True)
+
+            if CPUTEST:
+                train_data = train_data.iloc[:20]
+                val_data = val_data.iloc[:20]
 
             # Datasets initialisieren mit Rohdaten
             train_dataset = dataset(train_data["Phrase"], train_data["Sentiment"], **self.dataset_params)

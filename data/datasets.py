@@ -21,7 +21,6 @@ class dataset(Dataset):
 
         if self.onehot:
             # One hot encoding
-            print("onehot encoding")
             targets = pd.DataFrame(self.targets, columns=['Sentiment'])
             targets = pd.get_dummies(targets['Sentiment'], dtype=float)#.drop('Sentiment', axis=1)
             self.targets = targets.values.tolist()
