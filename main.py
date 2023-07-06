@@ -13,7 +13,7 @@ import transformers
 from transformers import BertTokenizer, BertModel, BertConfig
 # My intern packages for dataloader, model etc
 
-from models.bert import BERTClass, BERTClass_2FC
+from models.bert import BERTClass, BERTClass_2FC, BERTClass_res
 from models.bert_without_mlp import Class_2FC
 from nettrainer import NetTrainer
 
@@ -58,7 +58,8 @@ def main():
 
             # Laden des Netzes
             model = BERTClass_2FC()
-            #model.l1.requires_grad = False
+            for param in model.l1.parameters():
+                param.requires_grad = False
 
         elif (dataholder['model_type'] == 'MLP'):
             tokenizer = None
@@ -68,6 +69,11 @@ def main():
     if dataholder['model_type'] == 'BERT':
         # Tokenizer für BERT laden
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+    total_params = sum(p.numel() for p in model.parameters())
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"Number of parameters (total): {total_params}")
+    print(f"Number of parameters (trainale): {trainable_params}")
 
     model.to(device)
 
@@ -92,7 +98,6 @@ def main():
         'max_len': dataholder["max_len"],
         'tokenizer': tokenizer
     }
-
     # Trainer erzeugen
     print("[MAIN]: Loading trainer")
     trainer = NetTrainer(model,
@@ -123,7 +128,6 @@ def main():
     # Check nach Fehlern beim Optimizer laden
     if optimizer is None:
         raise Exception("[Dataholder]: No proper 'optimizer' found!")
-
     # Start Training
     print("[MAIN]: Start Training")
     trainer.train(dataholder.get("epochs"),

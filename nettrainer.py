@@ -21,7 +21,6 @@ RETRAIN = False
 COLLECT = False
 CONTROL_OUTPUT = False
 CPUTEST = True
-
 class NetTrainer():
     """
         Diese Klasse fuehrt das Training durch.
@@ -127,7 +126,6 @@ class NetTrainer():
         :param batch_data: Daten eine Trainingsbatch. Ein Item ist ein dict{input, targets}
         :return: Loss der Batch.
         """
-
         outputs = self.model(batch_data, self.device)
         self.optimizer.zero_grad()
         loss = self.criterion(outputs, batch_data['targets'].to(self.device, dtype=torch.float))
@@ -185,7 +183,6 @@ class NetTrainer():
         min_loss = float('inf')
         cur_patience = 0
         finish_reason = 'Training did not start'
-
         # Bei -1 gesamtes Trainingsdatenset laden
         if (self.current_set == -1):
             train_loader, test_loader = self.prepare_data()
@@ -280,4 +277,4 @@ class NetTrainer():
         self.criterion.to('cuda')
 
         # Log if cpu or gpu is used
-        self.logger.log_string("device usage", ("GPU" if self.device=="GPU" else "CPU"))
+        self.logger.log_string("device usage", ("GPU" if self.device=="cuda" else "CPU"))

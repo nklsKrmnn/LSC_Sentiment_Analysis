@@ -1,5 +1,5 @@
 {
-    "name": "BERT_2FC_SM--bs100--lr03--mom5-sge",
+    "name": "Test0706",
     "model_type": "BERT",
     "model_path": "",
     "data_dir": "dataset_mr",

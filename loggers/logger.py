@@ -143,6 +143,8 @@ class Logger():
 
         torch.save(model, os.path.join(path, filename + "_" + self._model_name + '.pt'))
         #torch.save(state_dict, os.path.join(path, filename + "_" + self._model_name + '.pt'))
+        #model_scripted = torch.jit.script(model)  # Export to TorchScript
+        #model_scripted.save(os.path.join(path, filename + "_" + self._model_name + '.pt'))
 
     def close(self):
         """
