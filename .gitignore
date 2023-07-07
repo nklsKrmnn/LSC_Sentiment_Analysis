@@ -53,12 +53,6 @@
 /runs/model_saves/best_model_2FC_ppbert_SM - 2023-07-03 20-31-49.242301_.pt
 /runs/model_saves/best_model_2FC_ppbert_SM - 2023-07-03 21-18-26.301806_.pt
 data/tweets.csv
-data/dataset_tw/Trainset_5.csv
-data/dataset_tw/Trainset_3.csv
-data/dataset_tw/Trainset_1.csv
-data/dataset_tw/Trainset_2.csv
-data/dataset_tw/Trainset_4.csv
-data/dataset_tw/Trainset_6.csv
 data/dataset_am/Testset.csv
 data/dataset_am/Trainset_1.csv
 data/dataset_am/Trainset_3.csv
@@ -69,7 +63,5 @@ data/dataset_am/Trainset_6.csv
 data/dataset_tw/Trainset_complete.csv
 data/dataset_am/Trainset_complete.csv
 data/amazon.csv
-data/dataset_tw/Testset.csv
 data/dataset_am/Evaluationset.csv
-data/datasets_tw/Evaluationset.csv
 data/IMDBDataset.csv
