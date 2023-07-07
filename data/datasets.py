@@ -9,21 +9,16 @@ import csv
 class dataset(Dataset):
 
     def __init__(self, input, targets,
-                 tokenize_bert: bool, onehot: bool = True, second_layer: bool = False,
+                 tokenize_bert: bool, onehot: bool = True, onehot_encoding: list = None, second_layer: bool = False,
                  tokenizer=None, max_len=None):
         self.input = input
         self.targets = targets
         self.tokenizer = tokenizer
         self.max_len = max_len
         self.onehot = onehot
+        self.onehot_encoding = onehot_encoding
         self.tokenize = tokenize_bert
         self.second_layer = second_layer
-
-        if self.onehot:
-            # One hot encoding
-            targets = pd.DataFrame(self.targets, columns=['Sentiment'])
-            targets = pd.get_dummies(targets['Sentiment'], dtype=float)#.drop('Sentiment', axis=1)
-            self.targets = targets.values.tolist()
 
     def __len__(self):
         return len(self.input)
@@ -32,9 +27,12 @@ class dataset(Dataset):
         input = self.input[index]
         target = self.targets[index]
 
-        #TODO: weiters preprocessing
-
-        # if self.capitalize:
+        target_coding = []
+        # Onehot encoding
+        if self.onehot:
+            for _, code in enumerate(self.onehot_encoding):
+                target_coding.append(1 if (code == target) else 0)
+            target = target_coding
 
         if self.tokenize:
             # Error Check

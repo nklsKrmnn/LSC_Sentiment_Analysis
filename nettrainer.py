@@ -16,11 +16,11 @@ from IPython.display import clear_output
 import warnings
 warnings.filterwarnings("ignore")
 
-CSV_FILES = False
+CSV_FILES = True
 RETRAIN = False
 COLLECT = False
 CONTROL_OUTPUT = False
-CPUTEST = False
+CPUTEST = True
 class NetTrainer():
     """
         Diese Klasse fuehrt das Training durch.

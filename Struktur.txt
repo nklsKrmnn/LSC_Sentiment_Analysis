@@ -33,6 +33,8 @@ cat Definition_File
 scp -r <Source> stud105809@quadriga.fh-wedel.de:/home/stud105809
  -> scp -r "C:\Users\nikla\OneDrive\Desktop\LSC_Quad" stud105809@quadriga.fh-wedel.de:/home/stud105809
  -> scp -r stud105809@quadriga.fh-wedel.de:/home/stud105809/LSC_Quad "\Users\nikla\OneDrive\Desktop"
+ # Datenrate limitieren und timeout verhindern bei großen Datenpaketen
+ -> scp -o ServerAliveInterval=15 -o ServerAliveCountMax=200 -l 8000 stud105809@quadriga.fh-wedel.de:/home/stud105809/LSC_Sentiment_Analysis/runs/model_saves/best_model_BERT_2FC_SM_do5-bs45-adam_L1Frozen.pt "\Users\nikla\OneDrive\Desktop"
 
 # Öffnen einer virtuellen Konsole
 tmux

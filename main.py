@@ -41,7 +41,7 @@ def load_json(param_file="test_params.json", params_dir="parameters"):
 def main():
     # Laden der Json Parameter
     print("[MAIN]: Loading json file")
-    dataholder = load_json("MLP.json")
+    dataholder = load_json("params_bert.json")
 
     # Device ermitteln (GPU oder CPU)
     use_cuda = dataholder["gpu"]
@@ -50,17 +50,16 @@ def main():
     # Laden modellspezifischer Inhalte
     if dataholder['model_path'] != "":
         file_path = os.path.join("runs", "model_saves", dataholder['model_path'])
-        model = torch.load(file_path)
-        #model = BERTClass_2FC()
-        #model.load_state_dict(torch.load(file_path))
+        if device == 'cuda':
+            model = torch.load(file_path)
+        else:
+            model = torch.load(file_path, map_location=torch.device('cpu'))
         print("[MAIN]: Model loaded")
     else:
         if dataholder['model_type'] == 'BERT':
 
             # Laden des Netzes
             model = BERTClass_res()
-            for param in model.l1.parameters():
-                param.requires_grad = False
 
         elif (dataholder['model_type'] == 'MLP'):
             tokenizer = None
@@ -70,6 +69,13 @@ def main():
     if dataholder['model_type'] == 'BERT':
         # Tokenizer für BERT laden
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+    if dataholder["freeze_first"]:
+        for param in model.l1.parameters():
+            param.requires_grad = False
+    else:
+        for param in model.l1.parameters():
+            param.requires_grad = True
 
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -97,7 +103,8 @@ def main():
         'onehot': dataholder["onehot"],
         'tokenize_bert': dataholder["tokenize"],
         'max_len': dataholder["max_len"],
-        'tokenizer': tokenizer
+        'tokenizer': tokenizer,
+        'onehot_encoding': [-1, 0, 1]
     }
     # Trainer erzeugen
     print("[MAIN]: Loading trainer")
