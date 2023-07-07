@@ -1,6 +1,6 @@
 {
-    "name": "Test0706",
-    "model_type": "BERT",
+    "name": "BERT_2FC_SM--bs100--lr03--mom5-sge",
+    "model_type",: "BERT",
     "model_path": "",
     "data_dir": "dataset_mr",
     "batchsize_train": 100,

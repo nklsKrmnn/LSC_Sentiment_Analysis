@@ -45,15 +45,20 @@ class BERTClass_2FC(torch.nn.Module):
 
 class BERTClass_res(torch.nn.Module):
     def __init__(self):
-        super(BERTClass_2FC, self).__init__()
+        super(BERTClass_res, self).__init__()
         self.l1 = transformers.BertModel.from_pretrained('bert-base-uncased', return_dict=False)
-        self.l2 = torch.nn.Dropout(0.9)
+        self.l2 = torch.nn.Dropout(0.5)
         self.l3 = nn.BatchNorm1d(768)
         self.l4 = torch.nn.ReLU()
         self.l5 = torch.nn.Linear(768, 768)
         self.l6 = torch.nn.Identity(768, 768)
         self.l7 = torch.nn.ReLU()
-        self.l8 = torch.nn.Linear(768, 3)
+        self.l8 = nn.BatchNorm1d(768)
+        self.l9 = torch.nn.ReLU()
+        self.l10 = torch.nn.Linear(768, 768)
+        self.l11 = torch.nn.Identity(768, 768)
+        self.l12 = torch.nn.ReLU()
+        self.l13 = torch.nn.Linear(768, 3)
 
     def forward(self, input, device):
         ids = input['ids'].to(device, dtype=torch.long)
@@ -67,5 +72,10 @@ class BERTClass_res(torch.nn.Module):
         output_5 = self.l5(output_4)
         output_6 = self.l6(output_5) + output_2
         output_7 = self.l7(output_6)
-        output = self.l8(output_7)
+        output_8 = self.l8(output_7)
+        output_9 = self.l9(output_8)
+        output_10 = self.l10(output_9)
+        output_11 = self.l11(output_10) + output_7
+        output_12 = self.l12(output_11)
+        output = self.l13(output_12)
         return output

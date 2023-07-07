@@ -16,11 +16,11 @@ from IPython.display import clear_output
 import warnings
 warnings.filterwarnings("ignore")
 
-CSV_FILES = True
+CSV_FILES = False
 RETRAIN = False
 COLLECT = False
 CONTROL_OUTPUT = False
-CPUTEST = True
+CPUTEST = False
 class NetTrainer():
     """
         Diese Klasse fuehrt das Training durch.
@@ -254,8 +254,11 @@ class NetTrainer():
         fin_outputs, fin_targets = [], []
 
         # Labels extrahieren
-        outputs = np.array(outputs).argmax(axis=1)
-        targets = np.array(targets).argmax(axis=1)
+        if self.dataset_params['onehot']:
+            outputs = np.array(outputs).argmax(axis=1)
+            targets = np.array(targets).argmax(axis=1)
+        else:
+            outputs = np.clip(np.round(np.array(outputs), decimals=0), -1, 1)
 
         # Metrics berechnen
         accuracy = metrics.accuracy_score(targets, outputs)

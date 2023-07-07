@@ -32,6 +32,7 @@ cat Definition_File
 # Dateien rüber kopieren in Quad-Ordner
 scp -r <Source> stud105809@quadriga.fh-wedel.de:/home/stud105809
  -> scp -r "C:\Users\nikla\OneDrive\Desktop\LSC_Quad" stud105809@quadriga.fh-wedel.de:/home/stud105809
+ -> scp -r stud105809@quadriga.fh-wedel.de:/home/stud105809/LSC_Quad "\Users\nikla\OneDrive\Desktop"
 
 # Öffnen einer virtuellen Konsole
 tmux
@@ -60,3 +61,7 @@ nvidia-smi
 
 # Singularity container schließen
 exit
+
+# Open Tensorboard
+python -m tensorboard.main --logdir=runs/
+

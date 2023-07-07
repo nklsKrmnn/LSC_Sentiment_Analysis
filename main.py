@@ -14,6 +14,7 @@ from transformers import BertTokenizer, BertModel, BertConfig
 # My intern packages for dataloader, model etc
 
 from models.bert import BERTClass, BERTClass_2FC, BERTClass_res
+from models.MLP import Class_MLP_2RES, Class_2FC, Class_FC
 from models.bert_without_mlp import Class_2FC
 from nettrainer import NetTrainer
 
@@ -40,7 +41,7 @@ def load_json(param_file="test_params.json", params_dir="parameters"):
 def main():
     # Laden der Json Parameter
     print("[MAIN]: Loading json file")
-    dataholder = load_json("params_bert.json")
+    dataholder = load_json("MLP.json")
 
     # Device ermitteln (GPU oder CPU)
     use_cuda = dataholder["gpu"]
@@ -57,13 +58,13 @@ def main():
         if dataholder['model_type'] == 'BERT':
 
             # Laden des Netzes
-            model = BERTClass_2FC()
+            model = BERTClass_res()
             for param in model.l1.parameters():
                 param.requires_grad = False
 
         elif (dataholder['model_type'] == 'MLP'):
             tokenizer = None
-            model = Class_2FC()
+            model = Class_FC()
         print("[MAIN]: Model created")
 
     if dataholder['model_type'] == 'BERT':
