@@ -17,6 +17,36 @@ class Class_FC(torch.nn.Module):
         output = self.l2(output_1)
         return output
 
+class Class_2FC_mse(torch.nn.Module):
+    def __init__(self):
+        super(Class_2FC_mse, self).__init__()
+        self.l1 = torch.nn.Dropout(0.2)
+        self.l2 = torch.nn.ReLU()
+        self.l3 = torch.nn.Linear(768, 200)
+        self.l4 = torch.nn.Dropout(0.2)
+        self.l5 = torch.nn.ReLU()
+        self.l6 = torch.nn.Linear(200, 3)
+        self.l7 = torch.nn.Dropout(0.2)
+        self.l8 = torch.nn.ReLU()
+        self.l9 = torch.nn.Linear(3, 1)
+
+
+    def forward(self, input, device):
+
+        input = input['input'].to(device, torch.float32)
+
+        output_1 = self.l1(input)
+        output_2 = self.l2(output_1)
+        output_3 = self.l3(output_2)
+        output_4 = self.l4(output_3)
+        output_5 = self.l5(output_4)
+        output_6 = self.l6(output_5)
+        output_7 = self.l7(output_6)
+        output_8 = self.l8(output_7)
+        output = self.l9(output_8)
+
+        return output
+
 class Class_2FC(torch.nn.Module):
     def __init__(self):
         super(Class_2FC, self).__init__()
@@ -28,6 +58,7 @@ class Class_2FC(torch.nn.Module):
         self.l7 = nn.BatchNorm1d(200)
         self.l8 = nn.LayerNorm(200)
         self.l9 = torch.nn.Linear(200, 3)
+
 
     def forward(self, input, device):
 
@@ -47,7 +78,7 @@ class Class_2FC(torch.nn.Module):
 class Class_MLP_2RES(torch.nn.Module):
     def __init__(self):
         super(Class_MLP_2RES, self).__init__()
-        self.l2 = torch.nn.Dropout(0.5)
+        self.l1 = torch.nn.Dropout(0.2)
         self.l3 = nn.BatchNorm1d(768)
         self.l4 = nn.LayerNorm(768)
         self.l5 = torch.nn.ReLU()
@@ -57,13 +88,13 @@ class Class_MLP_2RES(torch.nn.Module):
         self.l9 = torch.nn.ReLU()
         self.l10 = torch.nn.Linear(100, 768)
         self.l11 = torch.nn.Identity(768, 768)
-        self.l12 = torch.nn.Linear(768, 3)
+        self.l12 = torch.nn.Linear(768, 1)
 
     def forward(self, input, device):
 
         input = input['input'].to(device, torch.float32)
 
-        output_2 = self.l2(input)
+        output_2 = self.l1(input)
         output_3 = self.l3(output_2)
         output_4 = self.l4(output_3)
         output_5 = self.l5(output_4)

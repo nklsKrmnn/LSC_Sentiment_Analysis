@@ -90,7 +90,7 @@ def test_bert(dataholder, path_testset):
 
     return outputs, targets, avg_loss
 
-def test_statistics(outputs, targets, target_labels, test_loss=None):
+def test_statistics(outputs, targets, target_labels=[-1,0,1], test_loss=None):
 
     if test_loss != None:
         print(f'Test-Loss: {test_loss}')
