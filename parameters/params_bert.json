@@ -9,7 +9,7 @@
     "epochs": 1500,
     "n_trainsets": 6,
     "start_trainset": -1,
-    "freeze_first": true,
+    "freeze_first": false,
     "inflation": 10,
     "patience": 0,
     "validation_size": 0.2,
