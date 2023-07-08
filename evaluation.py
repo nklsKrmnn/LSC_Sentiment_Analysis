@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import confusion_matrix,  ConfusionMatrixDisplay, classification_report
+from sklearn.metrics import confusion_matrix,  ConfusionMatrixDisplay, classification_report, accuracy_score
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -36,6 +36,4 @@ def test_statistics(outputs, targets, target_labels=["Negative", "Neutral", "Pos
     print("Classifcation Report:")
     print(cr)
 
-    return cr['accuracy']
-
-# TODO: test_statistics funktioniert bei BOW nicht 
+    return accuracy_score(targets, outputs)
