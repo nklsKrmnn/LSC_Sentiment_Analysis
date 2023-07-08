@@ -38,3 +38,4 @@ def test_statistics(outputs, targets, target_labels=["Negative", "Neutral", "Pos
 
     return cr['accuracy']
 
+# TODO: test_statistics funktioniert bei BOW nicht 
