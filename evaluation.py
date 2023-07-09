@@ -25,7 +25,7 @@ def test_statistics(outputs, targets, target_labels=["Negative", "Neutral", "Pos
         print(f'Test-Loss: {test_loss}')
 
     # confusion matrix
-    cm = confusion_matrix(targets, outputs, labels=range(len(target_labels)))
+    cm = confusion_matrix(targets, outputs, labels=[-1,0,1])
     cm_display = ConfusionMatrixDisplay(cm, display_labels=target_labels).plot()
     plt.title("Confusion Matrix")
     plt.show()
