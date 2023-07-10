@@ -19,7 +19,7 @@ warnings.filterwarnings("ignore")
 CSV_FILES = True
 RETRAIN = False
 COLLECT = False
-CONTROL_OUTPUT = False
+CONTROL_OUTPUT = True
 CPUTEST = False
 class NetTrainer():
     """

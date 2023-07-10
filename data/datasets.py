@@ -66,7 +66,7 @@ class dataset(Dataset):
         elif self.second_layer:
             item = {
                 'input': torch.tensor(self.input[index], dtype=torch.float32),
-                'targets': torch.tensor(self.targets[index], dtype=torch.float)
+                'targets': torch.tensor(target, dtype=torch.long)
             }
         else:
             item = {
