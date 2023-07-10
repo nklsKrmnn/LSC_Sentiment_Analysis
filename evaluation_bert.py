@@ -42,7 +42,7 @@ def test_bert(dataholder, path_testset, model_path):
     # Set training parameters
     dataset_params = {
         'onehot': dataholder["onehot"],
-        'onehot_encoding': [-1,1],
+        'onehot_encoding': [0,1,2,3,4],
         'tokenize_bert': dataholder["tokenize"],
         'max_len': dataholder["max_len"],
         'tokenizer': tokenizer
@@ -58,7 +58,7 @@ def test_bert(dataholder, path_testset, model_path):
 
     # Rohdaten als dataframe laden
     test_data = pd.read_csv(path_testset, delimiter=";")
-    test_data = test_data.iloc[:50].reset_index(drop=True)
+    test_data = test_data.iloc[:1000].reset_index(drop=True)
 
     # Initialisierung Dataset und Dataloader
     test_dataset = dataset(test_data["Phrase"], test_data["Sentiment"], **dataset_params)

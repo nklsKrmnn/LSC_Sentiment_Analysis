@@ -1,5 +1,5 @@
 {
-    "name": "TEST_Bild_Full_BERT_2FC_do5_SM--lr003--mom1--bs45--sge_tw",
+    "name": "Full_BERT_2FC_do5_SM--lr003--mom1--bs45--sge_tw__onehot3",
     "model_type": "BERT",
     "model_path": "",
     "data_dir": "dataset_tw",
@@ -13,8 +13,8 @@
     "inflation": 10,
     "patience": 0,
     "validation_size": 0.2,
-    "learning_rate": 0.0003,
-    "momentum": 0.2,
+    "learning_rate": 0.003,
+    "momentum": 0.1,
     "gpu": true,
     "seed": 42,
     "translateV_chance": 0.5,

@@ -136,7 +136,7 @@ class Logger():
         fig = plt.figure()
         cm = confusion_matrix(targets, outputs)
         #plt.matshow(cm)
-        cm_display = ConfusionMatrixDisplay(cm).plot()
+        cm_display = ConfusionMatrixDisplay(cm).plot(cmap=plt.cm.Blues)
 
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
@@ -146,8 +146,7 @@ class Logger():
         self._logger.add_image("image/confussion_matrix", image, step)
 
         print("[Logger]: Charts saved.")
-        plt.close(fig)
-        plt.close(cm_display)
+        plt.close('all')
 
     def save_net(self, model, filename="best_model"):
         """
