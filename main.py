@@ -13,7 +13,7 @@ import transformers
 from transformers import BertTokenizer, BertModel, BertConfig
 # My intern packages for dataloader, model etc
 
-from models.bert import BERTClass, BERTClass_2FC, BERTClass_res, BERTClass_2FC_5
+from models.bert import BERTClass, BERTClass_2FC, BERTClass_res, BERTClass_2FC_5, BERTClass_mse
 from models.MLP import Class_MLP_2RES, Class_2FC, Class_FC, Class_2FC_mse
 from models.bert_without_mlp import Class_2FC
 from nettrainer import NetTrainer
@@ -58,7 +58,7 @@ def main():
     else:
         if dataholder['model_type'] == 'BERT':
             # Laden des Netzes
-            model = BERTClass_2FC_5()
+            model = BERTClass_2FC()
         elif (dataholder['model_type'] == 'MLP'):
             tokenizer = None
             model = Class_FC()
@@ -102,7 +102,7 @@ def main():
         'tokenize_bert': dataholder["tokenize"],
         'max_len': dataholder["max_len"],
         'tokenizer': tokenizer,
-        'onehot_encoding': [0,1,2,3,4]
+        'onehot_encoding': [-1,1]
     }
     # Trainer erzeugen
     print("[MAIN]: Loading trainer")

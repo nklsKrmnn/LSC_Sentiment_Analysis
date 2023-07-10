@@ -20,7 +20,7 @@ CSV_FILES = True
 RETRAIN = False
 COLLECT = False
 CONTROL_OUTPUT = True
-CPUTEST = False
+CPUTEST = True
 class NetTrainer():
     """
         Diese Klasse fuehrt das Training durch.
@@ -81,8 +81,8 @@ class NetTrainer():
             val_data = val_data.reset_index(drop=True)
 
             if CPUTEST:
-                train_data = train_data.iloc[:20]
-                val_data = val_data.iloc[:20]
+                train_data = train_data.iloc[:100]
+                val_data = val_data.iloc[:100]
 
             # Datasets initialisieren mit Rohdaten
             train_dataset = dataset(train_data["Phrase"], train_data["Sentiment"], **self.dataset_params)
@@ -205,7 +205,7 @@ class NetTrainer():
                 train_loss.append(epoch_train_loss)
 
                 # Validation loss berechnen
-                epoch_validation_loss, epoch_val_acc = self.validation(test_loader)
+                epoch_validation_loss, epoch_val_acc = self.validation(test_loader, epoch)
                 # Log validateion_loss
                 self.logger.val_loss(epoch_validation_loss, epoch)
                 self.logger.val_acc(epoch_val_acc, epoch)
@@ -230,7 +230,7 @@ class NetTrainer():
         # Training Cleanup
         self.logger.close()
 
-    def validation(self, test_loader):
+    def validation(self, test_loader, epoch):
 
         # Modell in eval Modus versetzen
         self.model.eval()
@@ -258,7 +258,9 @@ class NetTrainer():
             outputs = np.array(outputs).argmax(axis=1)
             targets = np.array(targets).argmax(axis=1)
         else:
-            outputs = np.clip(np.round(np.array(outputs), decimals=0), -1, 1)
+            outputs = np.clip(np.round(np.array(outputs), decimals=0), 0, 1)
+
+        self.logger.save_confussion_chart(outputs, targets, epoch)
 
         # Metrics berechnen
         accuracy = metrics.accuracy_score(targets, outputs)

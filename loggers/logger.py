@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import io
 import torch
 import sys
+from sklearn.metrics import confusion_matrix,  ConfusionMatrixDisplay, classification_report, accuracy_score
+
 
 sys.path.append("../../")
 
@@ -128,6 +130,24 @@ class Logger():
 
         print("[Logger]: Charts saved.")
         plt.close(fig)
+
+    def save_confussion_chart(self, outputs, targets, step: int):
+
+        fig = plt.figure()
+        cm = confusion_matrix(targets, outputs)
+        #plt.matshow(cm)
+        cm_display = ConfusionMatrixDisplay(cm).plot()
+
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        image = Image.open(buf)
+        image = ToTensor()(image)
+        self._logger.add_image("image/confussion_matrix", image, step)
+
+        print("[Logger]: Charts saved.")
+        plt.close(fig)
+        plt.close(cm_display)
 
     def save_net(self, model, filename="best_model"):
         """

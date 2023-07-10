@@ -1,9 +1,9 @@
 {
-    "name": "PPBERT_2Res_do3_MSE--bs45--adam",
+    "name": "TEST_MLP",
     "model_type": "MLP",
     "model_path": "",
-    "data_dir": "dataset_mr_after_first_layer_notOH",
-    "batchsize_train": 100,
+    "data_dir": "dataset_mr_after_first_layer",
+    "batchsize_train": 10,
     "batchsize_val": 200,
     "batchsize_test": 200,
     "epochs": 1500,
@@ -19,9 +19,9 @@
     "seed": 42,
     "translateV_chance": 0.5,
     "channels": 1,
-    "criterion": "mse",
+    "criterion": "crossentropy",
     "optimizer": "adam",
-    "onehot": false,
+    "onehot": true,
     "tokenize": true,
     "max_len": 200
 }
