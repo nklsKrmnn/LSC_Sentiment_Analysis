@@ -10,7 +10,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def test_statistics(outputs, targets, target_labels=["Negative", "Neutral", "Positive"], test_loss=None):
+def test_statistics(outputs, targets, target_labels=["Negative", "Neutral", "Positive"], target_indices=[-1,0,1], test_loss=None):
     """
     Eine Funktion zur standardisierten Bewertung von Klassifikationsergebnissen.
     Prints: Eine Heatmap einer Confussionmatrix sowie einen Classification-Report.
@@ -25,7 +25,7 @@ def test_statistics(outputs, targets, target_labels=["Negative", "Neutral", "Pos
         print(f'Test-Loss: {test_loss}')
 
     # confusion matrix
-    cm = confusion_matrix(targets, outputs, labels=range(len(target_labels)))
+    cm = confusion_matrix(targets, outputs, labels=target_indices)
     cm_display = ConfusionMatrixDisplay(cm, display_labels=target_labels).plot()
     plt.title("Confusion Matrix")
     plt.show()
