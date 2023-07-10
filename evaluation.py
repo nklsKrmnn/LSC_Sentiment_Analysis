@@ -26,7 +26,7 @@ def test_statistics(outputs, targets, target_labels=["Negative", "Neutral", "Pos
 
     # confusion matrix
     cm = confusion_matrix(targets, outputs, labels=target_indices)
-    cm_display = ConfusionMatrixDisplay(cm, display_labels=target_labels).plot()
+    cm_display = ConfusionMatrixDisplay(cm, display_labels=target_labels).plot(cmap=plt.cm.Blues)
     plt.title("Confusion Matrix")
     plt.show()
 
