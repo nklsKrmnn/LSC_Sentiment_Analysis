@@ -21,7 +21,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def test_bert(dataholder, path_testset):
+def test_bert(dataholder, path_testset, model_path):
     """
     Diese Funktion testet ein Netz nach dem Training mit dem Testdatensatz
     :param model: Modell, dass zu testen ist
@@ -34,7 +34,7 @@ def test_bert(dataholder, path_testset):
     use_cuda = dataholder['gpu']
     device = 'cuda' if cuda.is_available() and use_cuda else 'cpu'
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    file_path = os.path.join("runs", "model_saves", dataholder['model_path'])
+    file_path = os.path.join("runs", "model_saves", model_path)
 
     model = torch.load(file_path, map_location=device)
     model.to(device)
@@ -42,7 +42,7 @@ def test_bert(dataholder, path_testset):
     # Set training parameters
     dataset_params = {
         'onehot': dataholder["onehot"],
-        'onehot_encoding': [-1,0,1],
+        'onehot_encoding': [0,1,2,3,4],
         'tokenize_bert': dataholder["tokenize"],
         'max_len': dataholder["max_len"],
         'tokenizer': tokenizer
@@ -58,7 +58,7 @@ def test_bert(dataholder, path_testset):
 
     # Rohdaten als dataframe laden
     test_data = pd.read_csv(path_testset, delimiter=";")
-    test_data = test_data.iloc[:50].reset_index(drop=True)
+    test_data = test_data.iloc[:1000].reset_index(drop=True)
 
     # Initialisierung Dataset und Dataloader
     test_dataset = dataset(test_data["Phrase"], test_data["Sentiment"], **dataset_params)
@@ -98,12 +98,14 @@ def main_bert():
     print("[MAIN]: Loading json file")
     dataholder = load_json("params_bert_test.json")
 
-    path_test = "data/dataset_tw/Testset.csv"
+    path_test = "data/dataset_tw/Trainset_1.csv"
 
-    target_labels = ["negative", "neutral", "positive"]
+    model_path = "best_model_TEST_Bild_Full_BERT_2FC_do5_SM--lr07--mom5--bs45--sge_tw__onehot2.pt"
 
-    outputs, targets, test_loss = test_bert(dataholder, path_test)
-    test_statistics(outputs, targets, test_loss=test_loss)
+    target_labels = ["negative", "positive"]
+
+    outputs, targets, test_loss = test_bert(dataholder, path_test, model_path)
+    test_statistics(outputs, targets, target_indices=[0,1], target_labels=target_labels, test_loss=test_loss)
 
 if __name__ == '__main__':
     main_bert()
