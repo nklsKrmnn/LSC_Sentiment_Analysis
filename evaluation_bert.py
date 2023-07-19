@@ -21,7 +21,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def test_bert(dataholder, path_testset, model_path):
+def test_bert(dataholder, path_testset, model_path, onehot_encoding=[-1,0,1]):
     """
     Diese Funktion testet ein Netz nach dem Training mit dem Testdatensatz
     :param model: Modell, dass zu testen ist
@@ -42,7 +42,7 @@ def test_bert(dataholder, path_testset, model_path):
     # Set training parameters
     dataset_params = {
         'onehot': dataholder["onehot"],
-        'onehot_encoding': [0,1,2,3,4],
+        'onehot_encoding': onehot_encoding,
         'tokenize_bert': dataholder["tokenize"],
         'max_len': dataholder["max_len"],
         'tokenizer': tokenizer

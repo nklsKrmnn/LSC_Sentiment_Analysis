@@ -19,8 +19,8 @@ warnings.filterwarnings("ignore")
 CSV_FILES = True
 RETRAIN = False
 COLLECT = False
-CONTROL_OUTPUT = True
-CPUTEST = True
+CONTROL_OUTPUT = False
+CPUTEST = False
 class NetTrainer():
     """
         Diese Klasse fuehrt das Training durch.

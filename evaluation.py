@@ -30,7 +30,10 @@ def test_statistics(outputs, targets, target_labels=["Negative", "Neutral", "Pos
     plt.title("Confusion Matrix")
     plt.show()
 
-    cr = classification_report(targets, outputs, target_names=target_labels)
+    try:
+        cr = classification_report(targets, outputs, target_names=target_labels)
+    except:
+        cr = classification_report(targets, outputs, target_names=["Negative", "Positive"])
 
     # Classification Report
     print("Classifcation Report:")
